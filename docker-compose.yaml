@@ -1,0 +1,43 @@
+services:
+  app:
+    build: .
+    container_name: app
+    volumes:
+      - .:/app
+    networks:
+      - app-net
+    ports:
+      - "3000:3000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    networks:
+      - app-net
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata:/data/db
+      - ./mongod.conf:/etc/mongo/mongod.conf
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/node-auth --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: username
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: node-auth
+      MONGO_LOGLEVEL: error
+    command: ["mongod", "--config", "/etc/mongo/mongod.conf"]
+
+
+volumes:
+  dbdata:
+
+networks:
+  app-net:
+    driver: bridge
