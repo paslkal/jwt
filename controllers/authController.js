@@ -47,9 +47,17 @@ export async function signupPost(req, res) {
   }
 }
 
-export function loginPost(req, res) {
+export async function loginPost(req, res) {
   const {email, password} = req.body
 
-  res.send('user login')
+  try {
+    const user = await User.login(email, password)
+    
+    res.status(200).json({userId: user._id})
+  } catch (error) {
+    console.error(error)
+
+    res.status(400).json({})
+  }
 }
 
