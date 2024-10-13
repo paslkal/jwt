@@ -4,6 +4,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import router from './routes/authRoute.js';
 import cookieParser from 'cookie-parser';
+import requireAuth from './middleware/authMiddleware.js';
 const app = express();
 
 // middleware
@@ -33,7 +34,7 @@ mongoose.connect(dbURI, {
   ssl: false 
  })
  .then(() => {
-  console.log('Connected to the DATABASE!!!')
+  console.log('Connected to the DATABASE!')
   
   app.listen((app_host, app_port), () => 
     console.log(`server running on http://${app_host}:${app_port}`)
@@ -45,4 +46,4 @@ mongoose.connect(dbURI, {
 
 // routes
 app.get('/', (req, res) => res.render('home'));
-app.get('/smoothies', (req, res) => res.render('smoothies'));
+app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
