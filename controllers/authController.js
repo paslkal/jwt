@@ -73,3 +73,7 @@ export async function loginPost(req, res) {
   }
 }
 
+export function logoutGet(req, res) {
+  res.cookie('jwt', '', {maxAge: 1})
+  res.redirect('/')
+} 

@@ -4,7 +4,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import router from './routes/authRoute.js';
 import cookieParser from 'cookie-parser';
-import requireAuth from './middleware/authMiddleware.js';
+import {requireAuth, checkUser} from './middleware/authMiddleware.js';
 const app = express();
 
 // middleware
@@ -15,6 +15,8 @@ app.use(cookieParser())
 
 // view engine
 app.set('view engine', 'ejs');
+
+app.get('*', checkUser)
 
 const username = 'username'
 const password = 'password'
